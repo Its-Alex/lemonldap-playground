@@ -1,0 +1,36 @@
+services:
+  lemonldap:
+    image: coudot/lemonldap-ng:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      # SSODOMAIN: systemv.com
+      LOGLEVEL: debug
+      FASTCGI_LISTEN_PORT: 9000
+      PROXY_RANGE: 127.0.0.1
+      PRESERVEFILES: /etc/lemonldap-ng /var/lib/lemonldap-ng/conf /var/lib/lemonldap-ng/sessions /var/lib/lemonldap-ng/psessions
+      # PORTAL_HOSTNAME: auth.systemv.com
+      # MANAGER_HOSTNAME: manager.systemv.com
+      # HANDLER_HOSTNAME: handler.systemv.com
+      # TEST1_HOSTNAME: app.systemv.com
+      # TEST2_HOSTNAME: test2.systemv.com
+    volumes:
+      - ./volumes/llng/etc:/etc/lemonldap-ng
+      - ./volumes/llng/var-sessions:/var/lib/lemonldap-ng/sessions
+      - ./volumes/llng/var-psessions:/var/lib/lemonldap-ng/psessions
+      - ./volumes/llng/theme:/usr/share/lemonldap-ng/portal/htdocs/static/CustomTheme
+      - ./volumes/llng/template:/usr/share/lemonldap-ng/portal/templates/CustomTheme
+      - ./volumes/llng/plugins:/usr/share/perl5/Lemonldap/NG/Portal/Plugins/CustomPlugin
+      - ./volumes/llng/register:/usr/share/perl5/Lemonldap/NG/Portal/Register/CustomRegister
+      - ./volumes/llng/userdb:/usr/share/perl5/Lemonldap/NG/Portal/UserDB/CustomUserdb
+      - ./volumes/llng/auth:/usr/share/perl5/Lemonldap/NG/Portal/Auth/CustomAuth
+      - ./volumes/llng/captcha:/usr/share/perl5/Lemonldap/NG/Portal/Captcha/CustomCaptcha
+      - ./volumes/llng/menutab:/usr/share/perl5/Lemonldap/NG/Portal/MenuTab/CustomMenuTab
+      # Custom configuration
+      - ./config/llng/var-conf/lmConf-1.json:/var/lib/lemonldap-ng/conf/lmConf-1.json
+      - ./config/nginx/sites-enabled/docker-service.conf:/etc/nginx/sites-enabled/docker-service.conf
+  docker-service:
+    image: crccheck/hello-world
+    ports:
+      - 80
